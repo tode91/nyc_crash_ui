@@ -37,6 +37,7 @@
     "bootstrap-timepicker": "^0.5.2",
     "chart.js": "1.0.*",
     "ckeditor": "^4.7.0",
+    "d3-sankey": "^0.7.1",
     "datatables.net": "^1.10.15",
     "datatables.net-bs": "^1.10.15",
     "fastclick": "^1.0.6",

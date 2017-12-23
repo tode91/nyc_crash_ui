@@ -1,0 +1,54 @@
+.street{
+  fill:none;
+  stroke:#00cc00;
+  stroke-width: 0.25px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  
+}
+
+
+.area{
+  fill: #f4f4f4;
+  stroke: #082952;
+  stroke-width: 0.1px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.nyc{
+  fill: #082952;
+  stroke: #082952;
+  stroke-width: 0.25px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.subarea{
+  fill:white;
+  stroke: #082952;
+  stroke-width: 0.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.node rect {
+	fill-opacity: .9;
+	shape-rendering: crispEdges;
+}
+
+.node text {
+	font: 10px sans-serif;
+	pointer-events: none;
+	text-shadow: 0 1px 0 #fff;
+}
+
+.link {
+	fill: none;
+	stroke: #082952;
+	stroke-opacity: .2;
+}
+
+.link:hover {
+	stroke-opacity: .5;
+}
