@@ -612,8 +612,10 @@ function testMultiline(selector){
 		
 		svg.append("rect")
 		  .attr("class", "overlay")
-		  .attr("width", $(selector).width()-20-legend_width)
+		  .attr("width", $(selector).width()-20-65-legend_width)
 		  .attr("height", 560)
+		  .attr('x', 65)
+		  .attr('y', 0)
 		  .on("mouseout", function() { 
 			focus.style('display', 'none');
 			
@@ -624,7 +626,8 @@ function testMultiline(selector){
 		  })
 		  .on("mousemove", mousemove)
 		  .style('cursor', 'move')
-		  .attr('clip-path', 'url(#clip)');
+		  .attr('clip-path', 'url(#clip)')
+		  //.call(zoom);;
 
 
 		var xAxisG = svg.append('g')
@@ -691,6 +694,8 @@ function testMultiline(selector){
 			  .attr('id', key)
 			  .attr('fill', 'none')
 			  .attr('stroke', function(d) { return color(key); })
+			  .attr("stroke-width", "0.75px")
+			  .attr("stroke-linecap", "round")
 			  //.attr('stroke-width', );
 
 			var totalLength = path.node().getTotalLength();
@@ -707,14 +712,14 @@ function testMultiline(selector){
 			
 			 linesG.selectAll("g").data(data)
 			  .enter().append("circle")
-				.attr("r", 2.5)
+				.attr("r", 3)
 				.attr("class","line_"+key)
 				.attr("cx", function(d) { return xScale(new Date(d.date)); })
 				.attr("cy", function(d) { return yScale(d[key]);})
 				.attr('fill', function(d) { return color(key); })
+				.attr('fill-opacity', "0.5")
 				.attr('stroke', function(d) { return d3.rgb(color(key)).darker(1); })
-				.attr('stroke-width', 0.5)
-
+				.attr('stroke-width', 0.75)
 
 
 			legend.append('rect')
@@ -732,16 +737,59 @@ function testMultiline(selector){
 			   .on("click", function(){
 					// Determine if current line is visible 
 					var cl = $(this).attr("class")
-					var op = $("circle."+cl).css("opacity");
+					var tx = $("text."+cl).text();
 					var op_switch=1
-					if(op==1) op_switch=0
-					console.log($(this).attr("class"),op,op_switch)
+					var tx_switch="✓"
+					if(tx == "✓"){
+						op_switch=0 
+						tx_switch=""
+					}
 					d3.selectAll("circle."+cl+","+"path."+cl)
 						.transition().duration(100) 
 						.style("opacity", op_switch)
-						.style("fill-opacity", op_switch)
+						.style("fill-opacity", op_switch/2.0)
 						.style("stroke-opacity", op_switch);
-				}).text("Click to hide/display this serie")
+						
+					d3.selectAll("text."+cl)
+						.transition().duration(100) 
+						.text(tx_switch);
+				});
+				
+			legend.append("text")
+				.attr("class","line_"+key)
+				.attr('x', function() {
+					return 11;
+				  })
+				  .attr('height', 20)
+				  .attr('width', 20)
+				  .attr('y', function() {
+					return 20 + 20 * index + 5*index;
+				  })
+				.style("font-size",  "20px")
+				.style("font-weight",  "bold")
+				.style("color","black")
+				.text("✓")
+				.on("click", function(){
+					// Determine if current line is visible 
+					var cl = $(this).attr("class")
+					var tx = $("text."+cl).text();
+					console.log(tx)
+					var op_switch=1
+					var tx_switch="✓"
+					if(tx == "✓"){
+						op_switch=0 
+						tx_switch=""
+					}
+					d3.selectAll("circle."+cl+","+"path."+cl)
+						.transition().duration(100) 
+						.style("opacity", op_switch)
+						.style("fill-opacity", op_switch/2.0)
+						.style("stroke-opacity", op_switch);
+						
+					d3.selectAll("text."+cl)
+						.transition().duration(100) 
+						.text(tx_switch);
+				});
 
 			var kpi_text = legend.append('text')
 			  .attr('class', 'legend-text')
@@ -768,8 +816,6 @@ function testMultiline(selector){
 			index--;
 		  }
 		}
-	
-			
 
 		var clipPath = svg.append('clipPath')
 			.attr('id', 'clip')
@@ -795,9 +841,37 @@ function testMultiline(selector){
 
 		var zoom = d3.zoom()
 			.scaleExtent([1, 25])
-			.on('zoom', zoomed);
+			.on("start", function(){linesG.selectAll("circle").remove()})
+			.on('zoom', zoomed)
+			.on("end", function(){
+			
+				for (key in data[0]) {
+				  if (key !== 'date') {
+				  var tx = $("text.line_"+key).text();
+				  var fill_op="0"
+				  var stroke_op="0"
+				  console.log(tx)
+        		  if(tx == "✓"){
+					fill_op="0.5"
+					stroke_op="1"
+				  }
+					linesG.selectAll("g").data(data)
+							.enter().append("circle")
+						.attr("class","line_"+key)
+						.attr("r", 2.5).attr("cx", function(d) { return xScale(new Date(d.date)); })
+						.attr("cy", function(d) { return yScale(d[key]);})
+						.attr('fill', function(d) { return color(key); })
+						.attr('fill-opacity', fill_op)
+						.attr('stroke', function(d) { return d3.rgb(color(key)).darker(1); })
+						.attr('stroke-width', 0.5)
+						.attr('stroke-opacity', stroke_op)
+						.attr("class","line_"+key)
+						.attr('clip-path', 'url(#clip)');
+				  }
+				}
+			});;
 
-		svg.call(zoom);
+		svg.selectAll("rect, #yAxisG, #xAxisG").call(zoom);
 
 		function zoomed() {
 
@@ -809,7 +883,6 @@ function testMultiline(selector){
 
 		  yAxisG.call(yAxis.scale(d3.event.transform.rescaleY(yOrigScale)));
 
-			linesG.selectAll("circle").remove()
 		  for (key in data[0]) {
 			  if (key !== 'date') {
 
@@ -825,21 +898,9 @@ function testMultiline(selector){
 
 				path.attr('d', line(data));
 				path.attr('clip-path', 'url(#clip)');
-				
-				 
-			 linesG.selectAll("g").data(data)
-			  .enter().append("circle")
-				.attr("r", 2.5).attr("cx", function(d) { return xScale(new Date(d.date)); })
-				.attr("cy", function(d) { return yScale(d[key]);})
-				.attr('fill', function(d) { return color(key); })
-				.attr('stroke', function(d) { return d3.rgb(color(key)).darker(1); })
-				.attr('stroke-width', 0.5)
-				.attr("class","line_"+key)
-				.attr('clip-path', 'url(#clip)');
 
-			  }
+				}
 			}
-
 		}
 
 		var bisectDate = d3.bisector(function(d) { return new Date(d.date); }).left;
