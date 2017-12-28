@@ -52,3 +52,53 @@
 .link:hover {
 	stroke-opacity: .5;
 }
+
+
+#time_chart {
+  font: 10px sans-serif;
+  color:#444;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #082952;
+  color:#444;
+
+}
+
+
+#time_chart {
+      height: 600px;
+      width: 100%;
+    }
+
+.overlay {
+  fill: #f9fafc;
+  pointer-events: all;
+}
+
+text {
+  font-size: 10px;
+  font-family: sans-serif;
+  color:#444;
+
+}
+
+.legend-text {
+  font-size: 11px;
+  color:#444;
+}
+
+#date-text{
+	font-size:13px;
+	color:#444
+}
+
+.label_axis{
+    font-size: large;
+    text-anchor: initial;
+    font-weight: bold;
+    color:#444
+}

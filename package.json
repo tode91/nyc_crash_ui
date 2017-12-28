@@ -38,6 +38,7 @@
     "chart.js": "1.0.*",
     "ckeditor": "^4.7.0",
     "d3-sankey": "^0.7.1",
+    "d4": "^0.8.15",
     "datatables.net": "^1.10.15",
     "datatables.net-bs": "^1.10.15",
     "fastclick": "^1.0.6",
